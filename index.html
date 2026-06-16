@@ -1,0 +1,401 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>MGTS1301 · CAC × AI</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Figtree:wght@400;500;600;700;800&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --summit:#51247A;
+  --summit-lift:#6B3F95;
+  --ink:#1A1622;
+  --paper:#FCFCFD;
+  --mist:#F5F3F9;
+  --mist-2:#ECE7F3;
+  --ridge:#E2DBEC;
+  --line:#EBE7F1;
+  --slate:#5C5667;
+  --slate-soft:#8A8496;
+  --warn:#A6322B;
+  --warn-mist:#FBF2F1;
+  --ok:#2E7D52;
+}
+*{margin:0;padding:0;box-sizing:border-box}
+html{scroll-behavior:smooth;-webkit-text-size-adjust:100%}
+body{
+  font-family:'Figtree',system-ui,sans-serif;
+  color:var(--ink);background:var(--paper);
+  line-height:1.6;font-weight:400;letter-spacing:-0.003em;
+  -webkit-font-smoothing:antialiased;overflow-x:hidden;
+}
+.wrap{max-width:740px;margin:0 auto;padding:0 26px}
+.eyebrow{font-family:'Space Mono',monospace;font-size:11px;letter-spacing:.14em;
+  text-transform:uppercase;color:var(--summit);font-weight:700}
+.eyebrow .seq{color:var(--slate-soft)}
+
+.hero{position:relative;padding:96px 0 78px;
+  background:linear-gradient(180deg,#FCFCFD 0%,#F6F4FA 100%);
+  border-bottom:1px solid var(--line);overflow:hidden}
+.contours{position:absolute;inset:0;pointer-events:none;opacity:.45}
+.contours svg{width:100%;height:100%}
+.hero .wrap{position:relative;z-index:2}
+.hero .eyebrow{font-weight:400;color:var(--slate);text-transform:uppercase;margin-bottom:24px}
+.hero .eyebrow b{color:var(--summit);font-weight:700}
+.hero h1{font-size:clamp(33px,5.6vw,52px);line-height:1.06;font-weight:800;
+  letter-spacing:-.025em;margin-bottom:22px;max-width:14ch}
+.hero h1 em{font-style:normal;color:var(--summit)}
+.hero .sub{font-size:clamp(16px,2.3vw,18px);color:var(--slate);font-weight:400;max-width:52ch}
+.scrollcue{margin-top:46px;font-family:'Space Mono',monospace;font-size:11px;
+  letter-spacing:.13em;text-transform:uppercase;color:var(--slate-soft);
+  display:flex;align-items:center;gap:11px}
+.scrollcue .ln{width:30px;height:1px;background:var(--slate-soft);display:block}
+
+section.block{padding:78px 0;border-bottom:1px solid var(--line)}
+.block-head{margin-bottom:36px}
+.block-head h2{font-size:clamp(24px,3.4vw,31px);font-weight:800;letter-spacing:-.02em;
+  margin:13px 0 11px;line-height:1.14}
+.block-head p{font-size:16px;color:var(--slate);max-width:55ch}
+
+.ascent{position:relative;margin-top:6px}
+.ascent .spine{position:absolute;left:13px;top:10px;bottom:24px;width:1px;background:var(--ridge)}
+.stage{position:relative;padding:0 0 32px 52px;opacity:0;transform:translateY(16px);
+  transition:opacity .65s cubic-bezier(.2,.7,.3,1),transform .65s cubic-bezier(.2,.7,.3,1)}
+.stage.in{opacity:1;transform:none}
+.stage:last-child{padding-bottom:0}
+.node{position:absolute;left:0;top:2px;width:27px;height:27px;background:var(--paper);
+  border:1.5px solid var(--summit);border-radius:2px;display:flex;align-items:center;
+  justify-content:center;font-family:'Space Mono',monospace;font-size:12px;font-weight:700;
+  color:var(--summit);z-index:2}
+.stage .alt{font-family:'Space Mono',monospace;font-size:11px;letter-spacing:.1em;
+  color:var(--slate-soft);text-transform:uppercase;margin-bottom:4px}
+.stage h3{font-size:18px;font-weight:700;letter-spacing:-.01em;margin-bottom:9px}
+.stage h3 span{color:var(--summit);font-weight:600}
+.role{display:inline-block;font-family:'Space Mono',monospace;font-size:10px;
+  letter-spacing:.07em;text-transform:uppercase;font-weight:700;padding:3px 8px;
+  border-radius:2px;margin-bottom:12px}
+.role.human{background:var(--mist-2);color:var(--summit)}
+.role.ai{background:#E9EFF9;color:#2C5494}
+.stage p{font-size:15px;color:var(--slate);max-width:52ch;margin-bottom:13px}
+.callout{background:var(--mist);border-radius:3px;padding:14px 16px;max-width:52ch}
+.callout .lbl{font-family:'Space Mono',monospace;font-size:10px;letter-spacing:.09em;
+  text-transform:uppercase;color:var(--summit);font-weight:700;display:block;margin-bottom:6px}
+.callout .qt{font-size:14px;color:var(--ink);font-style:italic}
+
+.halu-card{border:1px solid var(--line);border-radius:3px;background:var(--paper);overflow:visible}
+.halu-prompt{padding:15px 20px;border-bottom:1px solid var(--line);background:var(--mist);
+  font-size:14px;color:var(--slate)}
+.halu-prompt b{color:var(--ink);font-weight:600}
+.halu-body{padding:24px}
+.halu-meta{display:flex;align-items:center;gap:9px;margin-bottom:16px;
+  font-family:'Space Mono',monospace;font-size:11px;letter-spacing:.05em;color:var(--slate-soft)}
+.halu-sq{width:7px;height:7px;background:var(--summit-lift);animation:pulse 1.9s ease-in-out infinite}
+@keyframes pulse{0%,100%{opacity:.35}50%{opacity:1}}
+.halu-text{font-size:16px;line-height:1.85;color:var(--ink)}
+.claim{position:relative;cursor:pointer;
+  background:linear-gradient(transparent 62%,rgba(166,50,43,.16) 62%);
+  border-bottom:1.5px solid rgba(166,50,43,.4);padding:0 1px;transition:background .2s ease;font-weight:500}
+.claim:hover{background:linear-gradient(transparent 62%,rgba(166,50,43,.28) 62%)}
+.claim.open{background:rgba(166,50,43,.1);border-bottom-color:var(--warn)}
+.claim .tag{position:absolute;top:-7px;right:-7px;width:15px;height:15px;border-radius:2px;
+  background:var(--warn);color:#fff;font-family:'Space Mono',monospace;font-size:9px;
+  font-weight:700;display:flex;align-items:center;justify-content:center;line-height:1}
+.pop{display:none;margin:12px 0 4px;background:var(--warn-mist);
+  border:1px solid rgba(166,50,43,.25);border-radius:3px;padding:13px 15px;
+  font-size:14px;line-height:1.6;color:var(--ink);font-weight:400}
+.pop.show{display:block;animation:popin .3s cubic-bezier(.2,.7,.3,1)}
+@keyframes popin{from{opacity:0;transform:translateY(-4px)}to{opacity:1;transform:none}}
+.pop .h{font-weight:700;color:var(--warn);font-family:'Space Mono',monospace;font-size:11px;
+  letter-spacing:.06em;text-transform:uppercase;display:block;margin-bottom:5px}
+.halu-foot{margin-top:20px;padding-top:17px;border-top:1px solid var(--line);
+  display:flex;align-items:baseline;gap:14px}
+.halu-counter{font-family:'Space Mono',monospace;font-size:12px;font-weight:700;
+  color:var(--warn);white-space:nowrap}
+.halu-verdict{font-size:14.5px;color:var(--slate)}
+.halu-verdict.done{color:var(--ink)}
+.halu-verdict.done b{color:var(--summit);font-weight:700}
+.tap-hint{font-family:'Space Mono',monospace;font-size:11px;letter-spacing:.07em;
+  color:var(--slate-soft);text-transform:uppercase;margin-top:15px;transition:opacity .3s ease}
+
+.constant{background:var(--ink);color:#fff;border-bottom:1px solid var(--ink)}
+.constant .wrap{padding:80px 26px}
+.constant .eyebrow{color:#B79BD6;margin-bottom:18px}
+.constant h2{font-size:clamp(25px,3.8vw,34px);font-weight:800;letter-spacing:-.02em;
+  line-height:1.16;max-width:20ch;margin-bottom:24px}
+.constant h2 em{font-style:normal;color:#C9AEE6}
+.models{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:26px}
+.chip{font-family:'Space Mono',monospace;font-size:12px;font-weight:400;color:#E7DEF2;
+  background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.14);
+  border-radius:2px;padding:6px 11px}
+.constant p{font-size:16.5px;color:#CFC8DA;max-width:56ch;margin-bottom:15px;line-height:1.65}
+.constant p strong{color:#fff;font-weight:600}
+.constant .kicker-stat{font-size:15px;color:#B79BD6;font-style:italic;margin-top:6px}
+
+.checks{display:flex;flex-direction:column;gap:11px;margin-top:4px}
+.check{display:flex;gap:15px;align-items:flex-start;border:1px solid var(--line);
+  border-radius:3px;padding:17px 19px;cursor:pointer;background:var(--paper);
+  transition:border-color .22s ease,background .22s ease}
+.check:hover{border-color:var(--summit-lift)}
+.check.on{border-color:var(--summit);background:var(--mist)}
+.box{flex-shrink:0;width:21px;height:21px;border-radius:2px;margin-top:1px;
+  border:1.5px solid var(--ridge);position:relative;
+  transition:border-color .2s ease,background .2s ease}
+.check.on .box{border-color:var(--summit);background:var(--summit)}
+.box svg{position:absolute;inset:0;width:100%;height:100%;stroke-dasharray:20;
+  stroke-dashoffset:20;transition:stroke-dashoffset .3s ease .05s}
+.check.on .box svg{stroke-dashoffset:0}
+.check .q{font-size:15px;color:var(--ink);font-weight:500;line-height:1.45}
+.check .q small{display:block;font-size:13px;color:var(--slate);font-weight:400;margin-top:3px}
+.acct-result{margin-top:22px;padding:18px 20px;border-radius:3px;background:var(--mist);
+  font-size:14.5px;color:var(--slate);line-height:1.62;transition:background .4s ease}
+.acct-result.full{background:var(--mist-2)}
+.acct-result b{color:var(--summit);font-weight:700}
+.acct-count{font-family:'Space Mono',monospace;font-weight:700;color:var(--summit)}
+
+.proto{margin-top:30px;display:flex;gap:14px;align-items:flex-start;background:var(--mist);
+  border-radius:3px;padding:18px 20px}
+.proto .ic{flex-shrink:0;width:32px;height:32px;border-radius:3px;background:var(--summit);
+  display:flex;align-items:center;justify-content:center}
+.proto .ic svg{width:17px;height:17px;stroke:#fff}
+.proto .tx{font-size:14px;color:var(--slate);line-height:1.55}
+.proto .tx b{color:var(--ink);font-weight:600}
+
+.close{padding:76px 0 64px;background:linear-gradient(180deg,#F6F4FA,#FCFCFD)}
+.close h2{font-size:clamp(23px,3.4vw,29px);font-weight:800;letter-spacing:-.02em;
+  max-width:22ch;line-height:1.18;margin-bottom:18px}
+.close h2 em{font-style:normal;color:var(--summit)}
+.close p{font-size:15.5px;color:var(--slate);max-width:54ch;margin-bottom:11px}
+.sign{margin-top:30px;padding-top:20px;border-top:1px solid var(--line);
+  font-family:'Space Mono',monospace;font-size:12px;color:var(--slate-soft);
+  display:flex;justify-content:space-between;flex-wrap:wrap;gap:10px}
+
+@media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}
+  .stage{opacity:1;transform:none}}
+@media (max-width:560px){.hero{padding:68px 0 54px}
+  section.block,.constant .wrap{padding:56px 0}.constant .wrap{padding-left:26px;padding-right:26px}}
+:focus-visible{outline:2px solid var(--summit);outline-offset:3px;border-radius:2px}
+</style>
+</head>
+<body>
+
+<header class="hero">
+  <div class="contours" aria-hidden="true">
+    <svg viewBox="0 0 740 460" preserveAspectRatio="xMidYMid slice" fill="none">
+      <g stroke="#51247A" stroke-width="1" opacity="0.18">
+        <path d="M-40 380 Q 200 300 380 340 T 800 300"/>
+        <path d="M-40 410 Q 220 330 380 372 T 800 332"/>
+        <path d="M-40 440 Q 240 366 380 404 T 800 366"/>
+        <path d="M-40 320 Q 180 250 380 286 T 800 250"/>
+        <path d="M-40 286 Q 200 214 380 250 T 800 214"/>
+        <path d="M-40 250 Q 220 184 380 214 T 800 182"/>
+      </g>
+    </svg>
+  </div>
+  <div class="wrap">
+    <div class="eyebrow">MGTS1301 <span class="seq">·</span> Co-intelligence in the Everest assessment <span class="seq">·</span> <b>prototype version for a glimpse</b></div>
+    <h1>Thinking is the climb.<br><em>AI carries the pack.</em></h1>
+    <p class="sub">A short, working look at what AI scaffolding could feel like inside your Everest assessment, built around the moments students actually face on the mountain.</p>
+    <div class="scrollcue"><span class="ln"></span>Begin the ascent</div>
+  </div>
+</header>
+
+<section class="block" id="cac">
+  <div class="wrap">
+    <div class="block-head">
+      <span class="eyebrow"><span class="seq">One ·</span> The shape of good AI use</span>
+      <h2>CAC, walked through one summit decision</h2>
+      <p>Co-intelligence (Cognition, AI, Cognition) is an ascent. The thinking that matters happens before and after the AI step, not inside it. Here it is, traced through one Everest moment: the call to push for the summit as the weather window closes.</p>
+    </div>
+    <div class="ascent">
+      <div class="spine" aria-hidden="true"></div>
+      <div class="stage" data-stage>
+        <div class="node">1</div>
+        <div class="alt">Base camp · 5,300m</div>
+        <h3>Cognition <span>· think first, alone</span></h3>
+        <span class="role human">Human only</span>
+        <p>Before any tool, the student forms their own read: who held what information, who pushed to climb, who hesitated, and why.</p>
+        <div class="callout">
+          <span class="lbl">In the Everest assessment</span>
+          <span class="qt">"The Marathoner pushed to summit while I, holding the weather data as Leader, stayed silent. I need to work out why I didn't speak before I ask anything."</span>
+        </div>
+      </div>
+      <div class="stage" data-stage>
+        <div class="node">2</div>
+        <div class="alt">The ascent · engaging the tool</div>
+        <h3>AI <span>· engage, with your thinking in hand</span></h3>
+        <span class="role ai">AI assists</span>
+        <p>Now AI earns its place: clarifying a theory, testing whether an argument holds, surfacing a counter-view. It speeds the climb; it does not choose the route.</p>
+        <div class="callout">
+          <span class="lbl">A legitimate ask</span>
+          <span class="qt">"Here's my read of why I stayed silent. Does it fit transformational or transactional leadership, and what would each predict I should have done?"</span>
+        </div>
+      </div>
+      <div class="stage" data-stage>
+        <div class="node">3</div>
+        <div class="alt">Summit · 8,848m</div>
+        <h3>Cognition <span>· evaluate, integrate, own</span></h3>
+        <span class="role human">Human only</span>
+        <p>The student weighs what AI returned against what actually happened, keeps what holds, rejects what doesn't, and writes in their own voice. The judgment is theirs to stand behind.</p>
+        <div class="callout">
+          <span class="lbl">The work that stays human</span>
+          <span class="qt">"The framing helped, but it missed the information asymmetry that really drove my silence. That part is mine, and it's what the assessment is testing."</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="block" id="halu">
+  <div class="wrap">
+    <div class="block-head">
+      <span class="eyebrow"><span class="seq">Two ·</span> Where the air gets thin</span>
+      <h2>A confident, wrong answer</h2>
+      <p>AI writes fluent management analysis even when it has no idea what happened in a student's team. Below is AI-generated commentary on an Everest run. It reads like the real thing. Tap each marked claim to see what's fabricated.</p>
+    </div>
+    <div class="halu-card">
+      <div class="halu-prompt">
+        <b>Student prompt:</b> "Write an analysis of how my Everest team handled the summit decision, using leadership theory."
+      </div>
+      <div class="halu-body">
+        <div class="halu-meta"><span class="halu-sq"></span>AI-generated response · sounds authoritative</div>
+        <p class="halu-text">
+          Your team demonstrated classic <span class="claim" data-claim>distributed leadership, with the Physician coordinating the final ascent decision<span class="tag">1</span></span>. The group reached <span class="claim" data-claim>Tuckman's "performing" stage by round three, when consensus formed smoothly<span class="tag">2</span></span>. This is consistent with <span class="claim" data-claim>Henderson and Walsh (2019), who found altitude-simulation teams decide best through hierarchical deference<span class="tag">3</span></span>.
+        </p>
+        <div class="pop" data-pop="1"><span class="h">Fabricated · invented role</span>The AI never saw your run. It invented a role and a decision-maker. In many teams the Physician holds medical data, not the summit call. It guessed a plausible structure and stated it as fact.</div>
+        <div class="pop" data-pop="2"><span class="h">Fabricated · invented dynamic</span>Specific, confident, entirely made up. The AI has no record of your rounds or whether consensus was smooth or fractious. It pattern-matched a textbook arc onto your team.</div>
+        <div class="pop" data-pop="3"><span class="h">Likely a fake citation</span>Plausible name, plausible year, plausible journal-speak, and very possibly no such paper. This is exactly what you must check against the ABDC list before trusting a single word of it.</div>
+        <div class="halu-foot">
+          <span class="halu-counter" id="haluCount">0 / 3</span>
+          <span class="halu-verdict" id="haluVerdict">Every sentence is grammatically perfect and analytically empty. The danger isn't bad writing. It's <em>convincing</em> writing built on nothing.</span>
+        </div>
+        <div class="tap-hint" id="tapHint">↑ tap a marked claim</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="constant" id="constant">
+  <div class="wrap">
+    <span class="eyebrow">The part that won't change</span>
+    <h2>The models get stronger. <em>The catch doesn't go away.</em></h2>
+    <div class="models">
+      <span class="chip">Opus 4.8 Max</span>
+      <span class="chip">Gemini 3.1 Pro</span>
+      <span class="chip">GPT 5.5 Thinking</span>
+      <span class="chip">→ and whatever comes next</span>
+    </div>
+    <p>These models are already formidable, and their successors will be sharper still. But there's a catch more capability doesn't fix: <strong>when you bring a flawed assumption, they tend to follow it, confidently, all the way down the hill.</strong> It isn't a bug they'll outgrow. It comes from how they're trained to agree with you.</p>
+    <p>The stronger the model, the more fluent and persuasive that wrong answer becomes, and the harder it is to catch, unless you did your own thinking first.</p>
+    <p class="kicker-stat">So your judgment isn't the part AI makes obsolete. It's the one thing that stays yours, and the thing that will set you apart at work.</p>
+  </div>
+</section>
+
+<section class="block" id="acct">
+  <div class="wrap">
+    <div class="block-head">
+      <span class="eyebrow"><span class="seq">Three ·</span> Before you sign your name</span>
+      <h2>The accountability check for Section&nbsp;4</h2>
+      <p>Your reflection asks one real question: can the student stand behind their recommendations? Picture handing your advice to another team. They climb, and it goes wrong. Could you say the outcome happened <em>in spite of</em> your advice, not because of it? Tick what's true.</p>
+    </div>
+    <div class="checks" id="checks">
+      <div class="check" data-check tabindex="0" role="checkbox" aria-checked="false">
+        <span class="box"><svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></span>
+        <span class="q">My analysis is grounded in what actually happened in my team.<small>Not a pattern that could describe any Everest run.</small></span>
+      </div>
+      <div class="check" data-check tabindex="0" role="checkbox" aria-checked="false">
+        <span class="box"><svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></span>
+        <span class="q">I can defend every recommendation in my own words.<small>Without the AI transcript open in front of me.</small></span>
+      </div>
+      <div class="check" data-check tabindex="0" role="checkbox" aria-checked="false">
+        <span class="box"><svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></span>
+        <span class="q">Every source is real, ABDC-listed, and read by me.<small>Found in the UQ Library, not just trusted from an AI summary.</small></span>
+      </div>
+      <div class="check" data-check tabindex="0" role="checkbox" aria-checked="false">
+        <span class="box"><svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></span>
+        <span class="q">I've disclosed where I used AI and where I chose not to.<small>And I'm comfortable standing by that record.</small></span>
+      </div>
+    </div>
+    <div class="acct-result" id="acctResult">
+      <span class="acct-count" id="acctCount">0 of 4</span> &nbsp;Accountability isn't about whether you used AI. It's about whether you can answer for the result.
+    </div>
+    <div class="proto">
+      <span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="M7 17h10"/><path d="M9 7h6"/></svg></span>
+      <span class="tx"><b>There's an AI-side counterpart too.</b> The MGTS1301 AI Interaction Protocol is an optional file students drop into their AI tool. It shifts the AI into a coaching role that asks about their own simulation, rather than writing for them. Lives on Blackboard; mentioned in class.</span>
+    </div>
+  </div>
+</section>
+
+<footer class="close">
+  <div class="wrap">
+    <h2>Same mountain. <em>Better instruments.</em></h2>
+    <p>Everything here runs on your existing Everest assessment. Nothing restructured, nothing replaced. The scaffolding just makes the AI-use dimension visible, intentional, and yours to shape.</p>
+    <p>If any scenario, line, or framing doesn't fit how you run the course, that's the conversation worth having.</p>
+    <div class="sign">
+      <span>MGTS1301 · CAC × AI · prototype</span>
+      <span>BEL Graduate AI Initiative · UQ Business School</span>
+    </div>
+  </div>
+</footer>
+
+<script>
+const stages=document.querySelectorAll('[data-stage]');
+const io=new IntersectionObserver((es)=>{
+  es.forEach(e=>{if(e.isIntersecting){e.target.classList.add('in');io.unobserve(e.target);}});
+},{threshold:0.25});
+stages.forEach(s=>io.observe(s));
+
+const claims=document.querySelectorAll('[data-claim]');
+const pops={};
+document.querySelectorAll('[data-pop]').forEach(p=>pops[p.dataset.pop]=p);
+const haluCount=document.getElementById('haluCount');
+const haluVerdict=document.getElementById('haluVerdict');
+const tapHint=document.getElementById('tapHint');
+const seen=new Set();
+claims.forEach((c,i)=>{
+  const id=String(i+1);
+  c.addEventListener('click',()=>{
+    const pop=pops[id];
+    const isOpen=pop.classList.contains('show');
+    Object.values(pops).forEach(p=>p.classList.remove('show'));
+    claims.forEach(cl=>cl.classList.remove('open'));
+    if(!isOpen){
+      pop.classList.add('show');
+      c.classList.add('open');
+      seen.add(id);
+      haluCount.textContent=seen.size+' / 3';
+      if(seen.size>=1)tapHint.style.opacity='0';
+      if(seen.size===claims.length){
+        haluVerdict.classList.add('done');
+        haluVerdict.innerHTML='All three were invented: the role, the dynamic, the citation. A student who hasn\'t thought it through first has <b>no way to catch any of it</b>.';
+      }
+    }
+  });
+});
+
+const checks=document.querySelectorAll('[data-check]');
+const acctCount=document.getElementById('acctCount');
+const acctResult=document.getElementById('acctResult');
+let ticked=0;
+function toggle(el){
+  el.classList.toggle('on');
+  const on=el.classList.contains('on');
+  el.setAttribute('aria-checked',on);
+  ticked+=on?1:-1;
+  acctCount.textContent=ticked+' of 4';
+  if(ticked===4){
+    acctResult.classList.add('full');
+    acctResult.innerHTML='<span class="acct-count">4 of 4</span> &nbsp;<b>This is what it means to own your work.</b> AI may have helped you climb, but you can answer for every step in your own voice. That\'s the graduate this course is building.';
+  }else{
+    acctResult.classList.remove('full');
+    if(ticked===0)acctResult.innerHTML='<span class="acct-count">0 of 4</span> &nbsp;Accountability isn\'t about whether you used AI. It\'s about whether you can answer for the result.';
+  }
+}
+checks.forEach(c=>{
+  c.addEventListener('click',()=>toggle(c));
+  c.addEventListener('keydown',e=>{if(e.key===' '||e.key==='Enter'){e.preventDefault();toggle(c);}});
+});
+</script>
+</body>
+</html>
